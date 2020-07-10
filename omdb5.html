@@ -1,0 +1,96 @@
+<html>
+
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+  <script type='text/babel'  >
+/*
+
+For case05, we'll do something similar to case04, pulling image data from randomuser.me and then iterating through the results object looking for pictures and mapping these to a myPictures array.
+
+*/
+
+
+
+class App extends React.Component{
+/*passing component props into App*/
+  constructor (props) {
+    super(props);
+
+    };
+
+   render(){
+       return(
+/*This is how App sets MyChild as a child component*/
+	   <MyMovie />
+
+       );
+   }
+}
+
+class MyMovie extends React.Component {
+  /*components have four native methods that basically follow its lifecycle from creation to dismantling: 
+  Constructor() - set up state, pass props
+  Render() - defines what to render
+  ComponentDidMount() - the controller stuff we do while the component is rendered and running
+  ComponentWillUnmount() - the controller stuff we do after the component has done whatever it needed to do - usually resetting or clearing state, dismantling render etc
+*/
+
+
+/*passing App props into MyMovie*/
+  constructor (props) {
+    super(props);
+	/*setting data unique to MyMovie with state - in this case, initializing an object*/
+	this.state = {data:null};
+
+  }
+
+
+  
+/*confusing i know. lets do this very slowly.*/
+componentDidMount() {
+var url="http://www.omdbapi.com/?i=tt3896198&apikey=a751ddcf&s=pulp&#160;fiction"
+/*fetch(url) will return an object from the api call*/
+        fetch(url)
+		/*below we see an anonymous arrow function that passes an argument response from the fetch and jsonifies the response*/
+		/*note that fetch().then() is a structure where it is understood that the response (it's an object) of the fetch api call is returned and passed to the anonymous function defined in the 'then' method as an arg.*/
+        .then((response) => response.json())
+		/*the second 'then' method specifies what to do once the jsonify response has completed - like the first 'then' method, it takes the return value of the first 'then' and passes it to the second one - in this second 'then' method, we take the jsonifiedresponse and pass it into another anonymous function that updates the state of MyMovie component*/
+        .then((myJsonifiedResponse) => {
+		    let myTitle = myJsonifiedResponse.Search[0].Title;
+            this.setState({ data: myTitle });
+			console.log(myTitle);
+        });
+    }
+render(){
+       return(
+	   <div>Here it is: {this.state.data}
+		 </div>
+       );
+   }
+}
+
+
+ReactDOM.render(<App />,document.getElementById("salute"));
+
+ </script>
+ <style>
+ #salute {width:720px;margin:auto;}
+ #center {text-align:center;}
+ </style>
+</head>
+<body>
+<div >
+<div id="center">OMDB</div>
+  <div id="salute" ></div>
+  <!-- 
+  Both state and props in react are used to control data into a component, generally props are set by parent and passed to child components and they are fixed throughout the component. For data that is going to change, we have to use state.
+  -->
+
+  </div>
+
+</body>
+</html>
